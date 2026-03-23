@@ -190,34 +190,6 @@ def workflow_step_transform_to_1(result):
             },
             'outputs': output_text_transform_to_1(result)
         }
-    elif step == 'pulumi/plan':
-        return {
-            'success': success(result),
-            'workflow_step': {
-                'type': 'plan'
-            },
-            'outputs': (output_plan_transform_to_1(result)
-                        if result['success']
-                        else output_text_transform_to_1(result))
-        }
-    elif step == 'pulumi/apply':
-        return {
-            'success': success(result),
-            'workflow_step': {
-                'type': 'apply'
-            },
-            'outputs': output_text_transform_to_1(result)
-        }
-    elif step == 'pulumi/init':
-        return {
-            'success': success(result),
-            'workflow_step': {
-                'type': 'run',
-                'cmd': result['payload'].get('cmd', ['pulumi', 'init']),
-                'exit_code': result['payload'].get('exit_code')
-            },
-            'outputs': output_text_transform_to_1(result)
-        }
     else:
         raise Exception('Unknown output step: {}'.format(step))
 
@@ -245,7 +217,7 @@ def transform_to_1(state, results):
                         if o['scope'] == {'type': 'run', 'flow': 'hooks', 'subflow': 'pre'}],
                 'post': [workflow_step_transform_to_1(o) for o in results['steps']
                          if o['scope'] == {'type': 'run', 'flow': 'hooks', 'subflow': 'post'}]
-                },
+            },
         },
         'dirspaces': [dirspace_transform_to_1(steps[0]['scope'], steps)
                       for steps in dirspaces.values()]
