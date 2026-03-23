@@ -217,7 +217,7 @@ def transform_to_1(state, results):
                         if o['scope'] == {'type': 'run', 'flow': 'hooks', 'subflow': 'pre'}],
                 'post': [workflow_step_transform_to_1(o) for o in results['steps']
                          if o['scope'] == {'type': 'run', 'flow': 'hooks', 'subflow': 'post'}]
-            },
+                },
         },
         'dirspaces': [dirspace_transform_to_1(steps[0]['scope'], steps)
                       for steps in dirspaces.values()]
