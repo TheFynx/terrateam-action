@@ -1,4 +1,5 @@
 import logging
+import os
 
 import cmd
 import engine
@@ -44,6 +45,11 @@ def apply(state, config):
 
 
 def diff(state, config):
+    # Read the preview output saved by plan()
+    diff_file = state.env['TERRATEAM_PLAN_FILE'] + '.diff'
+    if os.path.exists(diff_file):
+        with open(diff_file, 'r') as f:
+            return (True, f.read(), '')
     return None
 
 
@@ -66,8 +72,11 @@ def plan(state, config):
     with open(state.env['TERRATEAM_PLAN_FILE'], 'w') as f:
         f.write('{}')
 
+    # Save preview output for diff() to pick up
+    with open(state.env['TERRATEAM_PLAN_FILE'] + '.diff', 'w') as f:
+        f.write(stdout)
+
     success = proc.returncode == 0
-    # Pulumi preview shows "to create", "to update", "to delete", "to replace" when there are changes
     change_indicators = ['to create', 'to update', 'to delete', 'to replace']
     has_changes = success and any(ind in stdout for ind in change_indicators)
     return (success, has_changes, stdout, stderr)
