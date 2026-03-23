@@ -52,10 +52,10 @@ def apply(state, config):
     (proc, stdout, stderr) = cmd.run_with_output(
         state,
         {
-            'cmd': ['pulumi', 'up', '--yes']
+            'cmd': ['pulumi', 'up', '--yes', '--diff']
         })
 
-    return (proc.returncode == 0, stdout, stderr)
+    return (proc.returncode == 0, format_diff(stdout), stderr)
 
 
 def diff(state, config):
