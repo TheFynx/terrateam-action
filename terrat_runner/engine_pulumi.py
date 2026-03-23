@@ -66,7 +66,7 @@ def plan(state, config):
     (proc, stdout, stderr) = cmd.run_with_output(
         state,
         {
-            'cmd': ['pulumi', 'preview'] + config.get('extra_args', [])
+            'cmd': ['pulumi', 'preview', '--diff'] + config.get('extra_args', [])
         })
 
     with open(state.env['TERRATEAM_PLAN_FILE'], 'w') as f:
