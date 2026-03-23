@@ -66,7 +66,11 @@ def plan(state, config):
     with open(state.env['TERRATEAM_PLAN_FILE'], 'w') as f:
         f.write('{}')
 
-    return (proc.returncode == 0, stdout, stderr)
+    success = proc.returncode == 0
+    # Pulumi preview shows "to create", "to update", "to delete", "to replace" when there are changes
+    change_indicators = ['to create', 'to update', 'to delete', 'to replace']
+    has_changes = success and any(ind in stdout for ind in change_indicators)
+    return (success, has_changes, stdout, stderr)
 
 
 def unsafe_apply(state, config):
